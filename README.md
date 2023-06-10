@@ -102,7 +102,7 @@ The script will connect to Dynamics 365, retrieve users and their associated rol
 
 ## License <a name="license"></a>
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. See the [LICENSE](License.txt) file for details.
 
 [Back to top](#dynamics-365-user-access-inspector)
 
