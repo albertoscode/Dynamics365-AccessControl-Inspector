@@ -1,8 +1,19 @@
 # Import the Dynamics 365 Connector
-Add-Type -Path "C:\path\to\Microsoft.Xrm.Tooling.Connector.dll"
+try {
+    # This is required to interact with Dynamics 365
+    Add-Type -Path "C:\path\to\Microsoft.Xrm.Tooling.Connector.dll"
+} catch {
+    Write-Error "Error loading Microsoft.Xrm.Tooling.Connector.dll: $_"
+    return
+}
+
+# Get Dynamics 365 credentials
+# We prompt for credentials to avoid having to hardcode the password
+$cred = Get-Credential
 
 # Dynamics 365 connection string
-$connectionString = "AuthType=OAuth;Username=yourusername@yourdomain.com; Password=yourpassword;Url=https://yourorg.crm.dynamics.com;AppId=yourappid; RedirectUri=yourappredirecturi;"
+# AppId and RedirectUri are required for OAuth authentication
+$connectionString = "AuthType=OAuth; Username=$($cred.UserName); Password=$($cred.GetNetworkCredential().Password); Url=https://yourorg.crm.dynamics.com; AppId=yourappid; RedirectUri=yourappredirecturi;"
 
 # Create a new CrmServiceClient
 $crmServiceClient = New-Object -TypeName Microsoft.Xrm.Tooling.Connector.CrmServiceClient -ArgumentList $connectionString
@@ -14,6 +25,7 @@ if ($crmServiceClient.IsReady -eq $false) {
 }
 
 # Fetch users and their roles
+# This query fetches the full name, business unit ID, title, and system user ID for all users, along with their roles
 $query = @"
 <fetch distinct="false" no-lock="true" mapping="logical">
     <entity name="systemuser">
@@ -32,9 +44,16 @@ $query = @"
 "@
 
 # Execute the fetch query
-$result = $crmServiceClient.GetEntityDataByFetchSearch($query)
+try {
+    # This attempts to fetch the user data based on the query
+    $result = $crmServiceClient.GetEntityDataByFetchSearch($query)
+} catch {
+    Write-Error "Error executing fetch query: $_"
+    return
+}
 
 # Display the user access information
+# This goes through each record in the result and outputs the user's name and role
 foreach ($record in $result) {
     $userFullName = $record["fullname"]
     $userRole = $record["role1.name"]
