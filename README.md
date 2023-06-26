@@ -104,7 +104,7 @@ Usage <a name="usage"></a>
 
 Firstly, replace the C:\path\to\Microsoft.Xrm.Tooling.Connector.dll in the PowerShell script with the actual path to Microsoft.Xrm.Tooling.Connector.dll on your machine.
 
-When you run the script, you will be prompted to enter your Dynamics 365 credentials. These credentials are used to connect to your Dynamics 365 environment.
+When you execute the script, a prompt will appear requesting your Dynamics 365 credentials. These are crucial for establishing a connection with your specific Dynamics 365 environment.
 
 Once the credentials are entered, the script fetches users and their roles and displays the results in the console.
 
